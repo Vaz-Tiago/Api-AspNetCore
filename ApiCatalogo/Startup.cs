@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ApiCatalogo.Context;
+using ApiCatalogo.Extensions;
 using ApiCatalogo.Filters;
 using ApiCatalogo.Services;
 using Microsoft.AspNetCore.Builder;
@@ -56,6 +57,9 @@ namespace ApiCatalogo
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Adiciona middleware de tratamento de erro
+            app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 
