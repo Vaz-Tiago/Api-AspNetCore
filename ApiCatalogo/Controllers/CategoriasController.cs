@@ -8,6 +8,7 @@ using ApiCatalogo.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ApiCatalogo.Controllers
 {
@@ -16,9 +17,20 @@ namespace ApiCatalogo.Controllers
     public class CategoriasController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public CategoriasController(AppDbContext context)
+        private readonly IConfiguration _configuration;
+        public CategoriasController(AppDbContext context, IConfiguration config)
         {
             _context = context;
+            _configuration = config;
+        }
+
+        [HttpGet("autor")]
+        public string GetAutor()
+        {
+            var autor = _configuration["autor"];
+            // Para navegar dentro de um objeto basta adicionar : que adentra um nível
+            var conexao = _configuration["ConnectionStrings:DefaultConnection"];
+            return $"Autor: {autor}. Conexão: {conexao}";
         }
 
         // Injetando um serviço direto na rota
