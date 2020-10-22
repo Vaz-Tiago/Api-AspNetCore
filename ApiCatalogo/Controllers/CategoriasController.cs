@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ApiCatalogo.Controllers
 {
@@ -18,10 +19,12 @@ namespace ApiCatalogo.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
-        public CategoriasController(AppDbContext context, IConfiguration config)
+        private readonly ILogger _logger;
+        public CategoriasController(AppDbContext context, IConfiguration config, ILogger<CategoriasController> logger)
         {
             _context = context;
             _configuration = config;
+            _logger = logger;
         }
 
         [HttpGet("autor")]
@@ -43,6 +46,7 @@ namespace ApiCatalogo.Controllers
         [HttpGet("produtos")]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
+            _logger.LogInformation("============================= GET api/categorias/produtos =============================");
             return _context.Categorias.AsNoTracking()
                 .Include(c => c.Produtos)
                 .ToList();
@@ -51,18 +55,23 @@ namespace ApiCatalogo.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get()
         {
+            _logger.LogInformation("============================= GET api/categorias =============================");
             return _context.Categorias.AsNoTracking().ToList();
         }
 
         [HttpGet("{id}", Name = "ObterCategoria")]
         public ActionResult<Categoria> Get(int id)
         {
+            _logger.LogInformation($"============================= GET api/categorias/{id} =============================");
             var categoria = _context.Categorias.AsNoTracking()
                 .Include(p=> p.Produtos)
                 .FirstOrDefault(c => c.CategoriaId == id);
                 
             if (categoria == null)
+            {
+                _logger.LogInformation($"============================= GET api/categorias/{id} - NOT FOUND =============================");
                 return NotFound();
+            }
 
             return categoria;
         }
