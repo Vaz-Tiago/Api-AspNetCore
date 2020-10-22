@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ApiCatalogo.Context;
 using ApiCatalogo.Extensions;
 using ApiCatalogo.Filters;
+using ApiCatalogo.Logging;
 using ApiCatalogo.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,13 +51,19 @@ namespace ApiCatalogo
                 });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        // ILoggerFactory para o logger funcionar
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Adicionando logger:
+            loggerFactory
+                .AddProvider(new CustomLoggerProvider(
+                    new CustomLoggerProviderConfiguration { LogLevel = LogLevel.Information })
+                );
 
             // Adiciona middleware de tratamento de erro
             app.ConfigureExceptionHandler();
