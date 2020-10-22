@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ApiCatalogo.Context;
+using ApiCatalogo.Filters;
 using ApiCatalogo.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,10 +30,15 @@ namespace ApiCatalogo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Filtros -> Scoped cria uma instancia a cada requisição
+            services.AddScoped<ApiLoggingFilter>();
+
+            // Banco de Dados
             services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            // Serviço personalizado
             services.AddTransient<IMeuServico, MeuServico>();
 
             // Lida com exception lançada ao carregar os relacionamentos
