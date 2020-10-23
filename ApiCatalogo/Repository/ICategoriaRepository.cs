@@ -1,10 +1,11 @@
 ﻿using ApiCatalogo.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ApiCatalogo.Repository
 {
     public interface ICategoriaRepository : IRepository<Categoria>
     {
-        IEnumerable<Categoria> GetCategoriasProduto();
+        Task<IEnumerable<Categoria>> GetCategoriasProduto();
     }
 }

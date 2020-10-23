@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace ApiCatalogo.Repository
 {
@@ -21,9 +22,9 @@ namespace ApiCatalogo.Repository
             return _context.Set<T>().AsNoTracking();
         }
 
-        public T GetById(Expression<Func<T, bool>> predicate)
+        public async Task<T> GetById(Expression<Func<T, bool>> predicate)
         {
-            return _context.Set<T>().SingleOrDefault(predicate);
+            return await _context.Set<T>().SingleOrDefaultAsync(predicate);
         }
 
         public void Add(T entity)

@@ -4,8 +4,10 @@ using ApiCatalogo.Models;
 using ApiCatalogo.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ApiCatalogo.Controllers
 {
@@ -22,9 +24,9 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpGet("menor-preco")]
-        public ActionResult<IEnumerable<ProdutoDTO>> GetPRodutosPrecos()
+        public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetPRodutosPrecos()
         {
-            var produtos = _unitOfWork.ProdutoRepository.GetProdutosPorPreco().ToList();
+            var produtos = await _unitOfWork.ProdutoRepository.GetProdutosPorPreco();
 
             // É Só chamar o método map, que o mapeamento para DTO será feito.
             var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
@@ -34,18 +36,18 @@ namespace ApiCatalogo.Controllers
 
         [HttpGet]
         [ServiceFilter(typeof(ApiLoggingFilter))]
-        public ActionResult<IEnumerable<ProdutoDTO>> Get()
+        public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get()
         {
-            var produtos = _unitOfWork.ProdutoRepository.Get().ToList();
+            var produtos = await _unitOfWork.ProdutoRepository.Get().ToListAsync();
             var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
             return produtosDto;
 
         }
 
         [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
-        public ActionResult<ProdutoDTO> Get(int id)
+        public async Task<ActionResult<ProdutoDTO>> Get(int id)
         {
-            var produto = _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
+            var produto = await _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
             if (produto == null)
                 return NotFound();
@@ -56,12 +58,12 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody]ProdutoDTO produtoDto)
+        public async Task<ActionResult> Post([FromBody]ProdutoDTO produtoDto)
         {
             var produto = _mapper.Map<Produto>(produtoDto);
 
             _unitOfWork.ProdutoRepository.Add(produto);
-            _unitOfWork.Commit();
+            await _unitOfWork.Commit();
 
             var produtoDtoResponse = _mapper.Map<ProdutoDTO>(produto);
 
@@ -69,7 +71,7 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody]ProdutoDTO produtoDto)
+        public async Task<ActionResult> Put(int id, [FromBody]ProdutoDTO produtoDto)
         {
             if (id != produtoDto.ProdutoId)
                 return BadRequest();
@@ -77,7 +79,7 @@ namespace ApiCatalogo.Controllers
             var produto = _mapper.Map<Produto>(produtoDto);
 
             _unitOfWork.ProdutoRepository.Update(produto);
-            _unitOfWork.Commit();
+            await _unitOfWork.Commit();
 
             var produtoDtoResponse = _mapper.Map<ProdutoDTO>(produto);
 
@@ -85,15 +87,15 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<ProdutoDTO> Delete(int id)
+        public async Task<ActionResult<ProdutoDTO>> Delete(int id)
         {
-            var produto = _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
+            var produto = await _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
             if (produto == null)
                 return NotFound();
 
             _unitOfWork.ProdutoRepository.Delete(produto);
-            _unitOfWork.Commit();
+            await _unitOfWork.Commit();
 
             var produtoDto = _mapper.Map<ProdutoDTO>(produto);
 
