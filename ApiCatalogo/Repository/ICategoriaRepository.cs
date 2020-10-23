@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ApiCatalogo.Repository
 {
-    interface ICategoriaRepository : IRepository<Categoria>
+    public interface ICategoriaRepository : IRepository<Categoria>
     {
         IEnumerable<Categoria> GetCategoriasProduto();
     }
