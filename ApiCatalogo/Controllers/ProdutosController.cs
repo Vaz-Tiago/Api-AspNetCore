@@ -1,6 +1,8 @@
-﻿using ApiCatalogo.Filters;
+﻿using ApiCatalogo.DTOs;
+using ApiCatalogo.Filters;
 using ApiCatalogo.Models;
 using ApiCatalogo.Repository;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,58 +14,78 @@ namespace ApiCatalogo.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly IUnityOfWork _unitOfWork;
-        public ProdutosController(IUnityOfWork context)
+        private readonly IMapper _mapper;
+        public ProdutosController(IUnityOfWork context, IMapper mapper)
         {
             _unitOfWork = context;
+            _mapper = mapper;
         }
 
         [HttpGet("menor-preco")]
-        public ActionResult<IEnumerable<Produto>> GetPRodutosPrecos()
+        public ActionResult<IEnumerable<ProdutoDTO>> GetPRodutosPrecos()
         {
-            return _unitOfWork.ProdutoRepository.GetProdutosPorPreco().ToList();
+            var produtos = _unitOfWork.ProdutoRepository.GetProdutosPorPreco().ToList();
+
+            // É Só chamar o método map, que o mapeamento para DTO será feito.
+            var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
+
+            return produtosDto;
         }
 
         [HttpGet]
         [ServiceFilter(typeof(ApiLoggingFilter))]
-        public ActionResult<IEnumerable<Produto>> Get()
+        public ActionResult<IEnumerable<ProdutoDTO>> Get()
         {
-            return _unitOfWork.ProdutoRepository.Get().ToList();
+            var produtos = _unitOfWork.ProdutoRepository.Get().ToList();
+            var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
+            return produtosDto;
+
         }
 
         [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
-        public ActionResult<Produto> Get(int id)
+        public ActionResult<ProdutoDTO> Get(int id)
         {
             var produto = _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
             if (produto == null)
                 return NotFound();
 
-            return produto;
+            var produtoDto = _mapper.Map<ProdutoDTO>(produto);
+
+            return produtoDto;
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody]Produto produto)
+        public ActionResult Post([FromBody]ProdutoDTO produtoDto)
         {
+            var produto = _mapper.Map<Produto>(produtoDto);
+
             _unitOfWork.ProdutoRepository.Add(produto);
             _unitOfWork.Commit();
 
-            return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produto);
+            var produtoDtoResponse = _mapper.Map<ProdutoDTO>(produto);
+
+            return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produtoDtoResponse);
         }
 
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody]Produto produto)
+        public ActionResult Put(int id, [FromBody]ProdutoDTO produtoDto)
         {
-            if (id != produto.ProdutoId)
+            if (id != produtoDto.ProdutoId)
                 return BadRequest();
+
+            var produto = _mapper.Map<Produto>(produtoDto);
 
             _unitOfWork.ProdutoRepository.Update(produto);
             _unitOfWork.Commit();
 
-            return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produto);
+            var produtoDtoResponse = _mapper.Map<ProdutoDTO>(produto);
+
+            return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produtoDtoResponse);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Produto> Delete(int id)
+        public ActionResult<ProdutoDTO> Delete(int id)
         {
             var produto = _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
@@ -73,7 +95,9 @@ namespace ApiCatalogo.Controllers
             _unitOfWork.ProdutoRepository.Delete(produto);
             _unitOfWork.Commit();
 
-            return produto;
+            var produtoDto = _mapper.Map<ProdutoDTO>(produto);
+
+            return produtoDto;
         }
     }
 }
