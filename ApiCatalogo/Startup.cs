@@ -7,6 +7,7 @@ using ApiCatalogo.Context;
 using ApiCatalogo.Extensions;
 using ApiCatalogo.Filters;
 using ApiCatalogo.Logging;
+using ApiCatalogo.Repository;
 using ApiCatalogo.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,9 @@ namespace ApiCatalogo
         {
             // Filtros -> Scoped cria uma instancia a cada requisição
             services.AddScoped<ApiLoggingFilter>();
+
+            // Adicionando UnitOfWork como serviço
+            services.AddScoped<IUnityOfWork, UnityOfWork>();
 
             // Banco de Dados
             services.AddDbContext<AppDbContext>(options =>
