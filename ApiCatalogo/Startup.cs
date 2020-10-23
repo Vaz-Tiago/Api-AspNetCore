@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using ApiCatalogo.Context;
+using ApiCatalogo.DTOs.Mappings;
 using ApiCatalogo.Extensions;
 using ApiCatalogo.Filters;
 using ApiCatalogo.Logging;
 using ApiCatalogo.Repository;
 using ApiCatalogo.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +30,14 @@ namespace ApiCatalogo
         {
             // Filtros -> Scoped cria uma instancia a cada requisição
             services.AddScoped<ApiLoggingFilter>();
+
+            // Adicionando o Automapper para injetar DTOs.
+            var mappingConfig = new MapperConfiguration(mc => {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             // Adicionando UnitOfWork como serviço
             services.AddScoped<IUnityOfWork, UnityOfWork>();
