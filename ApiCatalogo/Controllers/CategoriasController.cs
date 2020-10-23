@@ -1,15 +1,10 @@
-﻿using System;
+﻿using ApiCatalogo.Models;
+using ApiCatalogo.Repository;
+using ApiCatalogo.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using ApiCatalogo.Context;
-using ApiCatalogo.Models;
-using ApiCatalogo.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace ApiCatalogo.Controllers
 {
@@ -17,26 +12,23 @@ namespace ApiCatalogo.Controllers
     [ApiController]
     public class CategoriasController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUnityOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
-        private readonly ILogger _logger;
-        public CategoriasController(AppDbContext context, IConfiguration config, ILogger<CategoriasController> logger)
+
+        public CategoriasController(IUnityOfWork context, IConfiguration config)
         {
-            _context = context;
+            _unitOfWork = context;
             _configuration = config;
-            _logger = logger;
         }
 
         [HttpGet("autor")]
         public string GetAutor()
         {
             var autor = _configuration["autor"];
-            // Para navegar dentro de um objeto basta adicionar : que adentra um nível
             var conexao = _configuration["ConnectionStrings:DefaultConnection"];
             return $"Autor: {autor}. Conexão: {conexao}";
         }
 
-        // Injetando um serviço direto na rota
         [HttpGet("saudacao/{nome}")]
         public ActionResult<string> GetSaudacao([FromServices] IMeuServico meuServico, string nome)
         {
@@ -46,30 +38,24 @@ namespace ApiCatalogo.Controllers
         [HttpGet("produtos")]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
-            _logger.LogInformation("============================= GET api/categorias/produtos =============================");
-            return _context.Categorias.AsNoTracking()
-                .Include(c => c.Produtos)
-                .ToList();
+            return _unitOfWork.CategoriaRepository.GetCategoriasProduto().ToList();
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Categoria>> Get()
         {
-            _logger.LogInformation("============================= GET api/categorias =============================");
-            return _context.Categorias.AsNoTracking().ToList();
+            return _unitOfWork.CategoriaRepository.Get()
+                .ToList();
         }
 
         [HttpGet("{id}", Name = "ObterCategoria")]
         public ActionResult<Categoria> Get(int id)
         {
-            _logger.LogInformation($"============================= GET api/categorias/{id} =============================");
-            var categoria = _context.Categorias.AsNoTracking()
-                .Include(p=> p.Produtos)
-                .FirstOrDefault(c => c.CategoriaId == id);
+            var categoria = _unitOfWork.CategoriaRepository
+                .GetById(c => c.CategoriaId == id);
                 
             if (categoria == null)
             {
-                _logger.LogInformation($"============================= GET api/categorias/{id} - NOT FOUND =============================");
                 return NotFound();
             }
 
@@ -79,8 +65,8 @@ namespace ApiCatalogo.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Categoria categoria)
         {
-            _context.Categorias.Add(categoria);
-            _context.SaveChanges();
+            _unitOfWork.CategoriaRepository.Add(categoria);
+            _unitOfWork.Commit();
 
             return new CreatedAtRouteResult("ObterCategoria", new { id = categoria.CategoriaId }, categoria);
         }
@@ -91,8 +77,8 @@ namespace ApiCatalogo.Controllers
             if (id != categoria.CategoriaId)
                 return BadRequest();
 
-            _context.Entry(categoria).State = EntityState.Modified;
-            _context.SaveChanges();
+            _unitOfWork.CategoriaRepository.Update(categoria);
+            _unitOfWork.Commit();
 
             return new CreatedAtRouteResult("ObterCategoria", new { id = categoria.CategoriaId }, categoria);
         }
@@ -100,13 +86,13 @@ namespace ApiCatalogo.Controllers
         [HttpDelete("{id}")]
         public ActionResult<Categoria> Delete(int id)
         {
-            var categoria = _context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
+            var categoria = _unitOfWork.CategoriaRepository.GetById(c => c.CategoriaId == id);
 
             if (categoria == null)
                 return NotFound();
 
-            _context.Categorias.Remove(categoria);
-            _context.SaveChanges();
+            _unitOfWork.CategoriaRepository.Delete(categoria);
+            _unitOfWork.Commit();
 
             return categoria;
         }

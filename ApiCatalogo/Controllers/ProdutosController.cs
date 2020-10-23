@@ -11,29 +11,29 @@ namespace ApiCatalogo.Controllers
     [ApiController]
     public class ProdutosController : ControllerBase
     {
-        private readonly IUnityOfWork _UnitOfWork;
+        private readonly IUnityOfWork _unitOfWork;
         public ProdutosController(IUnityOfWork context)
         {
-            _UnitOfWork = context;
+            _unitOfWork = context;
         }
 
         [HttpGet("menor-preco")]
         public ActionResult<IEnumerable<Produto>> GetPRodutosPrecos()
         {
-            return _UnitOfWork.ProdutoRepository.GetProdutosPorPreco().ToList();
+            return _unitOfWork.ProdutoRepository.GetProdutosPorPreco().ToList();
         }
 
         [HttpGet]
         [ServiceFilter(typeof(ApiLoggingFilter))]
         public ActionResult<IEnumerable<Produto>> Get()
         {
-            return _UnitOfWork.ProdutoRepository.Get().ToList();
+            return _unitOfWork.ProdutoRepository.Get().ToList();
         }
 
         [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
         public ActionResult<Produto> Get(int id)
         {
-            var produto = _UnitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
+            var produto = _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
             if (produto == null)
                 return NotFound();
@@ -44,8 +44,8 @@ namespace ApiCatalogo.Controllers
         [HttpPost]
         public ActionResult Post([FromBody]Produto produto)
         {
-            _UnitOfWork.ProdutoRepository.Add(produto);
-            _UnitOfWork.Commit();
+            _unitOfWork.ProdutoRepository.Add(produto);
+            _unitOfWork.Commit();
 
             return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produto);
         }
@@ -56,8 +56,8 @@ namespace ApiCatalogo.Controllers
             if (id != produto.ProdutoId)
                 return BadRequest();
 
-            _UnitOfWork.ProdutoRepository.Update(produto);
-            _UnitOfWork.Commit();
+            _unitOfWork.ProdutoRepository.Update(produto);
+            _unitOfWork.Commit();
 
             return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produto);
         }
@@ -65,13 +65,13 @@ namespace ApiCatalogo.Controllers
         [HttpDelete("{id}")]
         public ActionResult<Produto> Delete(int id)
         {
-            var produto = _UnitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
+            var produto = _unitOfWork.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
             if (produto == null)
                 return NotFound();
 
-            _UnitOfWork.ProdutoRepository.Delete(produto);
-            _UnitOfWork.Commit();
+            _unitOfWork.ProdutoRepository.Delete(produto);
+            _unitOfWork.Commit();
 
             return produto;
         }
