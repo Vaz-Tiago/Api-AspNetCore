@@ -11,6 +11,8 @@ namespace ApiCatalogo.Repository
 
         // Caso tenha algo específico, deve ser adicionado para a classe concreta implementar
         Task<IEnumerable<Produto>> GetProdutosPorPreco();
-        Task<IEnumerable<Produto>> GetProdutos(ProdutosParameters produtosParameters);
+
+        // Paginação
+        PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters);
     }
 }

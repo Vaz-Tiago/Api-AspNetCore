@@ -13,13 +13,17 @@ namespace ApiCatalogo.Repository
         // Cria um construtor para passar o contexto para a classe base
         public ProdutoRepository(AppDbContext context) : base(context) { }
 
-        public async Task<IEnumerable<Produto>> GetProdutos(ProdutosParameters produtosParameters)
+        public PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters)
         {
-            return await Get()
-                .OrderBy(on => on.Nome)
-                .Skip((produtosParameters.PageNumber - 1) * produtosParameters.PageSize)
-                .Take(produtosParameters.PageSize)
-                .ToListAsync();
+            //return await Get()
+            //    .OrderBy(on => on.Nome)
+            //    .Skip((produtosParameters.PageNumber - 1) * produtosParameters.PageSize)
+            //    .Take(produtosParameters.PageSize)
+            //    .ToListAsync();
+
+            return PagedList<Produto>
+                .ToPagedList(Get()
+                .OrderBy(on => on.ProdutoId), produtosParameters.PageNumber, produtosParameters.PageSize);
         }
 
         // Como a classe base já faz a implementação básica do CRUD, só é necessário implementar o método específico
