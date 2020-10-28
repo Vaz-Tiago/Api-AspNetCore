@@ -8,6 +8,7 @@ using ApiCatalogo.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +48,11 @@ namespace ApiCatalogo
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            // Adicionando Identity (Login)
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
             // Serviço personalizado
             services.AddTransient<IMeuServico, MeuServico>();
 
@@ -78,6 +84,9 @@ namespace ApiCatalogo
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // Middleware de Authenticação -> Sempre antes de autorização
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

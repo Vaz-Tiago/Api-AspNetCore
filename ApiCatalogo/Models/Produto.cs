@@ -12,20 +12,22 @@ namespace ApiCatalogo.Models
         [Key]
         public int ProdutoId { get; set; }
 
-        //[MaxLength(80)] -> Define o tamanho no banco enquanto o StringLength na validação
+        [MaxLength(80)]
         [Required(ErrorMessage = "O nome é obrigatório")]
         [StringLength(20, ErrorMessage = "O nome deve ter entre 5 e 20 caracteres", MinimumLength = 5)]
         //[PrimeiraLetraMaiuscula]
         public string Nome { get; set; }
 
         [Required]
-        //[MaxLength(300)]
+        [MaxLength(300)]
         [StringLength(20, ErrorMessage = "A descrição deve ter no máximo {1}")]
         public string Descricao { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal(8,2)")]
         [Range(1, 10000, ErrorMessage = "O preço deve estar entre {1} e {2}")]
-        public double Preco { get; set; }
+        public decimal Preco { get; set; }
 
         [Required]
         [MaxLength(300)]
