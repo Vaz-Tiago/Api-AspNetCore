@@ -13,7 +13,7 @@ namespace ApiCatalogo.Repository
         // Cria um construtor para passar o contexto para a classe base
         public ProdutoRepository(AppDbContext context) : base(context) { }
 
-        public PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters)
+        public PagedList<Produto> GetProdutos(PaginationParameters produtosParameters)
         {
             //return await Get()
             //    .OrderBy(on => on.Nome)

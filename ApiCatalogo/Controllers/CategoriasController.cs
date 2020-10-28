@@ -1,11 +1,13 @@
 ﻿using ApiCatalogo.DTOs;
 using ApiCatalogo.Models;
+using ApiCatalogo.Pagination;
 using ApiCatalogo.Repository;
 using ApiCatalogo.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -50,9 +52,22 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
+        public ActionResult<IEnumerable<CategoriaDTO>> Get([FromQuery]PaginationParameters parameters)
         {
-            var categoria = await _unitOfWork.CategoriaRepository.Get().ToListAsync();
+            var categoria = _unitOfWork.CategoriaRepository.GetCategorias(parameters);
+
+            var metadata = new
+            {
+                categoria.TotalCount,
+                categoria.PageSize,
+                categoria.CurrentPage,
+                categoria.TotalPages,
+                categoria.HasNext,
+                categoria.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
             var categoriaDto = _mapper.Map<List<CategoriaDTO>>(categoria);
 
             return categoriaDto;

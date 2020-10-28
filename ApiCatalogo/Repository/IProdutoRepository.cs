@@ -13,6 +13,6 @@ namespace ApiCatalogo.Repository
         Task<IEnumerable<Produto>> GetProdutosPorPreco();
 
         // Paginação
-        PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters);
+        PagedList<Produto> GetProdutos(PaginationParameters produtosParameters);
     }
 }

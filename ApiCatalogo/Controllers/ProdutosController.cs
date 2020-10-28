@@ -39,7 +39,7 @@ namespace ApiCatalogo.Controllers
 
         [HttpGet]
         [ServiceFilter(typeof(ApiLoggingFilter))]
-        public ActionResult<IEnumerable<ProdutoDTO>> Get([FromQuery] ProdutosParameters produtosParameters)
+        public ActionResult<IEnumerable<ProdutoDTO>> Get([FromQuery] PaginationParameters produtosParameters)
         {
             var produtos = _unitOfWork.ProdutoRepository.GetProdutos(produtosParameters);
 
