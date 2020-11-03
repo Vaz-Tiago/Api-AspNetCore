@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -84,6 +86,15 @@ namespace ApiCatalogo
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 });
 
+            // Adicioando Controle de versionamento
+            services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+            });
+
             // Serviço personalizado
             services.AddTransient<IMeuServico, MeuServico>();
 
@@ -124,6 +135,8 @@ namespace ApiCatalogo
             // CORS - Definindo políticas -> Utilizado em toda a aplicação
             //app.UseCors(options => options.AllowAnyOrigin());
             app.UseCors();
+
+
 
             app.UseEndpoints(endpoints =>
             {
