@@ -4,10 +4,8 @@ using ApiCatalogo.Pagination;
 using ApiCatalogo.Repository;
 using ApiCatalogo.Services;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -31,7 +29,6 @@ namespace ApiCatalogo.Controllers
             _mapper = mapper;
         }
 
-        
         [HttpGet("autor")]
         public string GetAutor()
         {

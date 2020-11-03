@@ -32,6 +32,18 @@ namespace ApiCatalogo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Adicionando CORS - VIA MIDDLEWARE -> Se fizer só a chamada, é necessário definir as politicas em Configure, basta dar um useCors
+            // Passando as politicas direto na chamada, depois basta usar direto no controlador
+            services.AddCors(option =>
+            {
+                option.AddPolicy("PertmitirApiRequest",
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .WithMethods("GET")
+                        .AllowAnyHeader()
+                    );
+            });
+
             // Filtros -> Scoped cria uma instancia a cada requisição
             services.AddScoped<ApiLoggingFilter>();
 
@@ -108,6 +120,10 @@ namespace ApiCatalogo
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            // CORS - Definindo políticas -> Utilizado em toda a aplicação
+            //app.UseCors(options => options.AllowAnyOrigin());
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

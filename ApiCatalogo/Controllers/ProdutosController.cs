@@ -4,18 +4,17 @@ using ApiCatalogo.Models;
 using ApiCatalogo.Pagination;
 using ApiCatalogo.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace ApiCatalogo.Controllers
 {
     [Route("api/[Controller]")]
     [ApiController]
+    [EnableCors("PertmitirApiRequest")]
     public class ProdutosController : ControllerBase
     {
         private readonly IUnityOfWork _unitOfWork;
