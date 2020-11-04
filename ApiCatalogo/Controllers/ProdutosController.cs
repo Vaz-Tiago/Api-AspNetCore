@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace ApiCatalogo.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[Controller]")]
     [ApiController]
     [EnableCors("PertmitirApiRequest")]
@@ -36,6 +37,11 @@ namespace ApiCatalogo.Controllers
             return produtosDto;
         }
 
+        /// <summary>
+        /// Exibe uma relação de produtos
+        /// </summary>
+        /// <param name="produtosParameters">Paramtros de Paginação: PageNumber, PageSize</param>
+        /// <returns>Retorna uma lista de produtos e o resultado da paginação no Header</returns>
         [HttpGet]
         [ServiceFilter(typeof(ApiLoggingFilter))]
         public ActionResult<IEnumerable<ProdutoDTO>> Get([FromQuery] PaginationParameters produtosParameters)
@@ -59,6 +65,11 @@ namespace ApiCatalogo.Controllers
 
         }
 
+        /// <summary>
+        /// Obtem um produto pelo Id
+        /// </summary>
+        /// <param name="id">Código do produto</param>
+        /// <returns>Um obejto produto</returns>
         [HttpGet("{id:int:min(1)}", Name = "ObterProduto")]
         public async Task<ActionResult<ProdutoDTO>> Get(int id)
         {

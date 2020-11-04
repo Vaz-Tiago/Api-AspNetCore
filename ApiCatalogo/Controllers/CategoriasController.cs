@@ -13,7 +13,10 @@ using System.Threading.Tasks;
 
 namespace ApiCatalogo.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    // Comentado o login para facilitar teste da documentação
+
+    //[Authorize(AuthenticationSchemes = "Bearer")]
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase
@@ -74,6 +77,11 @@ namespace ApiCatalogo.Controllers
             return categoriaDto;
         }
 
+        /// <summary>
+        /// Obtem uma categoria pelo seu Id
+        /// </summary>
+        /// <param name="id">Código da categoria</param>
+        /// <returns>Objetos Categoria</returns>
         [HttpGet("{id}", Name = "ObterCategoria")]
         public async Task<ActionResult<CategoriaDTO>> Get(int id)
         {
@@ -89,6 +97,22 @@ namespace ApiCatalogo.Controllers
             return categoriaDto;
         }
 
+        /// <summary>
+        /// Inclui uma nova categoria
+        /// </summary>
+        /// <remarks>
+        /// Exemplo de request:
+        /// 
+        ///     POST api/categorias
+        ///     {
+        ///         "categoriaId": 1,
+        ///         "nome": "categoria 1",
+        ///         "imagemUrl": "http://teste.com/i.jpg"
+        ///     }
+        /// </remarks>
+        /// <param name="categoriaDTO">Objeto Categoria</param>
+        /// <returns>Retorna a categoria incluida</returns>
+        /// <remarks>Retorna um objeto categoria incluído</remarks>
         [HttpPost]
         public async  Task<ActionResult> Post([FromBody] Categoria categoriaDTO)
         {

@@ -20,6 +20,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace ApiCatalogo
@@ -121,6 +123,11 @@ namespace ApiCatalogo
                         Url = new Uri("https://tiago.net/license")
                     }
                 });
+
+                // caso queira adicionar os comentários de documentação do C# no swagger
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             // Lida com exception lançada ao carregar os relacionamentos

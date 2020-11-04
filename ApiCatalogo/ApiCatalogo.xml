@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ApiCatalogo</name>
+    </assembly>
+    <members>
+        <member name="M:ApiCatalogo.Controllers.AutorizaController.Get">
+            <summary>
+            Mostra se a api está respondendo
+            </summary>
+            <returns>Retona a hora da requisição</returns>
+        </member>
+        <member name="M:ApiCatalogo.Controllers.AutorizaController.RegisterUSer(ApiCatalogo.DTOs.UsuarioDTO)">
+            <summary>
+            Registra um novo usuário
+            </summary>
+            <param name="model">Um obejto UsuarioDTO</param>
+            <returns>Status 200 e o token para o cliente</returns>
+        </member>
+        <member name="M:ApiCatalogo.Controllers.AutorizaController.Login(ApiCatalogo.DTOs.UsuarioDTO)">
+            <summary>
+            Verifica as credencias de um usuário
+            </summary>
+            <param name="userInfo">Um objeto do tipo usuárioDTO</param>
+            <returns>Status 200 e  token para o cliente</returns>
+            <remarks>Status 200 e  token para o cliente</remarks>
+        </member>
+        <member name="M:ApiCatalogo.Controllers.CategoriasController.Get(System.Int32)">
+            <summary>
+            Obtem uma categoria pelo seu Id
+            </summary>
+            <param name="id">Código da categoria</param>
+            <returns>Objetos Categoria</returns>
+        </member>
+        <member name="M:ApiCatalogo.Controllers.CategoriasController.Post(ApiCatalogo.Models.Categoria)">
+            <summary>
+            Inclui uma nova categoria
+            </summary>
+            <remarks>
+            Exemplo de request:
+            
+                POST api/categorias
+                {
+                    "categoriaId": 1,
+                    "nome": "categoria 1",
+                    "imagemUrl": "http://teste.com/i.jpg"
+                }
+            </remarks>
+            <param name="categoriaDTO">Objeto Categoria</param>
+            <returns>Retorna a categoria incluida</returns>
+            <remarks>Retorna um objeto categoria incluído</remarks>
+        </member>
+        <member name="M:ApiCatalogo.Controllers.ProdutosController.Get(ApiCatalogo.Pagination.PaginationParameters)">
+            <summary>
+            Exibe uma relação de produtos
+            </summary>
+            <param name="produtosParameters">Paramtros de Paginação: PageNumber, PageSize</param>
+            <returns>Retorna uma lista de produtos e o resultado da paginação no Header</returns>
+        </member>
+        <member name="M:ApiCatalogo.Controllers.ProdutosController.Get(System.Int32)">
+            <summary>
+            Obtem um produto pelo Id
+            </summary>
+            <param name="id">Código do produto</param>
+            <returns>Um obejto produto</returns>
+        </member>
+    </members>
+</doc>

@@ -12,6 +12,7 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace ApiCatalogo.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[Controller]")]
     [ApiController]
     public class AutorizaController : ControllerBase
@@ -28,12 +29,21 @@ namespace ApiCatalogo.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Mostra se a api está respondendo
+        /// </summary>
+        /// <returns>Retona a hora da requisição</returns>
         [HttpGet]
         public ActionResult<string> Get()
         {
             return $"AutorizaController || Acessado em : {DateTime.Now.ToLongTimeString()}";
         }
 
+        /// <summary>
+        /// Registra um novo usuário
+        /// </summary>
+        /// <param name="model">Um obejto UsuarioDTO</param>
+        /// <returns>Status 200 e o token para o cliente</returns>
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUSer([FromBody] UsuarioDTO model)
         {
@@ -54,6 +64,12 @@ namespace ApiCatalogo.Controllers
             return Ok(GeraToken(model));
         }
 
+        /// <summary>
+        /// Verifica as credencias de um usuário
+        /// </summary>
+        /// <param name="userInfo">Um objeto do tipo usuárioDTO</param>
+        /// <returns>Status 200 e  token para o cliente</returns>
+        /// <remarks>Status 200 e  token para o cliente</remarks>
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody]UsuarioDTO userInfo)
         {
