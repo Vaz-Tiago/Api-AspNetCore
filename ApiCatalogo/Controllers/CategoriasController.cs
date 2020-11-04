@@ -5,6 +5,7 @@ using ApiCatalogo.Repository;
 using ApiCatalogo.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -83,6 +84,8 @@ namespace ApiCatalogo.Controllers
         /// <param name="id">Código da categoria</param>
         /// <returns>Objetos Categoria</returns>
         [HttpGet("{id}", Name = "ObterCategoria")]
+        [ProducesResponseType(typeof(ProdutoDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<CategoriaDTO>> Get(int id)
         {
             var categoria = await _unitOfWork.CategoriaRepository
@@ -114,6 +117,9 @@ namespace ApiCatalogo.Controllers
         /// <returns>Retorna a categoria incluida</returns>
         /// <remarks>Retorna um objeto categoria incluído</remarks>
         [HttpPost]
+        [ProducesResponseType(typeof(ProdutoDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
         public async  Task<ActionResult> Post([FromBody] Categoria categoriaDTO)
         {
             var categoria = _mapper.Map<Categoria>(categoriaDTO);
@@ -126,6 +132,7 @@ namespace ApiCatalogo.Controllers
         }
 
         [HttpPut("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions),nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> Put(int id, [FromBody] Categoria categoriaDTO)
         {
             if (id != categoriaDTO.CategoriaId)
