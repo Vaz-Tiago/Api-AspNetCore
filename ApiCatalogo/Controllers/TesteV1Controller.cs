@@ -10,8 +10,8 @@ namespace ApiCatalogo.Controllers
     //[ApiVersion("1.0", Deprecated = true)] -> Envia no header que está obsoleto
     [ApiVersion("1.0")]
     //[ApiVersion("2.0")] // Controlador pode atender duas versões -> Mas deve inicar qual método atende qual
-    //[Route("api/{v:apiVersion}/teste")]
-    [Route("api/teste")]
+    [Route("api/{v:apiVersion}/teste")]
+    //[Route("api/teste")]
 
     [ApiController]
     public class TesteV1Controller : ControllerBase

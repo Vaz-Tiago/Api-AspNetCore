@@ -18,6 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System;
 using System.Text;
 
 namespace ApiCatalogo
@@ -98,6 +100,29 @@ namespace ApiCatalogo
             // Serviço personalizado
             services.AddTransient<IMeuServico, MeuServico>();
 
+            // Swagger
+            services.AddSwaggerGen(c=>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "AapiCatalogo",
+                    Description = "Catálogo de Produtos e Categorias",
+                    TermsOfService = new Uri("https://tiago.net/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Tiago",
+                        Email = "tiago.vaz@hotmail.com",
+                        Url = new Uri("https://www.linkedin.com/in/vaz-tiago/")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Usar sobre Alguma licensa",
+                        Url = new Uri("https://tiago.net/license")
+                    }
+                });
+            });
+
             // Lida com exception lançada ao carregar os relacionamentos
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
@@ -136,7 +161,14 @@ namespace ApiCatalogo
             //app.UseCors(options => options.AllowAnyOrigin());
             app.UseCors();
 
+            // Swagger
+            app.UseSwagger();
 
+            //SwaggerUI
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cátalogo de Produtos e Categorias");
+            });
 
             app.UseEndpoints(endpoints =>
             {

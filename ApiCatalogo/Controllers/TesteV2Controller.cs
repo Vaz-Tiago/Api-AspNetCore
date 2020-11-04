@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiCatalogo.Controllers
 {
     [ApiVersion("2.0")]
-    //[Route("api/v{v:apiVersion}/teste")] -> Removido pois vai acessar via header
-    [Route("api/teste")]
+    [Route("api/v{v:apiVersion}/teste")]
+    //[Route("api/teste")]
     [ApiController]
     public class TesteV2Controller : ControllerBase
     {
