@@ -14,9 +14,7 @@ using System.Threading.Tasks;
 
 namespace ApiCatalogo.Controllers
 {
-    // Comentado o login para facilitar teste da documentação
-
-    //[Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
